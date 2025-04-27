@@ -1,4 +1,4 @@
-use crate::scraper::{ticker_parser, ticker_parser_if::TickerParserIf};
+use crate::ticker_scraper::{ticker_parser, ticker_parser_if::TickerParserIf};
 
 #[test]
 fn test_ticker_parser_normal_one() {

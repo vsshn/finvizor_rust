@@ -1,4 +1,4 @@
-use crate::scraper::fetcher_if;
+use crate::fetcher::fetcher_if;
 use async_trait::async_trait;
 use reqwest::Client;
 use reqwest::Error;

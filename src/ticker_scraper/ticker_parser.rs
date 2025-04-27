@@ -1,6 +1,6 @@
 // src/parser.rs
 
-use crate::scraper::ticker_parser_if;
+use crate::ticker_scraper::ticker_parser_if;
 
 fn find_between<'a>(text: &'a str, start_word: &str, end_word: &str) -> Option<&'a str> {
     // Find the position of the start word

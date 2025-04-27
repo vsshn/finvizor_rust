@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use crate::scraper::fetcher_if;
-use crate::scraper::next_page_getter_if;
-use crate::scraper::ticker_parser_if;
+use crate::fetcher::fetcher_if;
+use crate::ticker_scraper::next_page_getter_if;
+use crate::ticker_scraper::ticker_parser_if;
 
 use log::{debug, error, info};
 
