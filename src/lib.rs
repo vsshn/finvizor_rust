@@ -6,9 +6,20 @@ pub mod ticker_scraper {
     pub mod ticker_parser_if;
 }
 
+pub mod ticker_data_scraper {
+    pub mod data_scrape;
+    pub mod next_page_getter;
+    pub mod ticker_data_parser;
+    pub mod ticker_data_parser_if;
+}
+
 pub mod fetcher {
     pub mod fetcher;
     pub mod fetcher_if;
+}
+
+pub mod ticker_data {
+    pub mod ticker_data;
 }
 
 #[cfg(test)]

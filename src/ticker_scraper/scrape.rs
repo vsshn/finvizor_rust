@@ -37,7 +37,7 @@ where
                 break;
             }
         }
-        current_page = npg.get_next_page(&base_page, page);
+        current_page = npg.get_next_page(&base_page, page).unwrap();
     }
     all_tickers
 }

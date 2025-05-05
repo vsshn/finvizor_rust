@@ -6,10 +6,10 @@ const BASE_PAGE: &str = "www.vshn.com/";
 fn test_next_page_getter_normal() {
     assert_eq!(
         next_page_getter::NextPageGetter.get_next_page(BASE_PAGE, 1),
-        format!("{}&r=21", BASE_PAGE)
+        Some(format!("{}&r=21", BASE_PAGE))
     );
     assert_eq!(
         next_page_getter::NextPageGetter.get_next_page(BASE_PAGE, 3),
-        format!("{}&r=61", BASE_PAGE)
+        Some(format!("{}&r=61", BASE_PAGE))
     );
 }
