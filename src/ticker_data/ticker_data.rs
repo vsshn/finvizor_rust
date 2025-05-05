@@ -1,18 +1,21 @@
+#[derive(PartialEq, Debug)]
 pub enum Value {
     Positive(u64),
     Negative(u64),
     Zero,
 }
 
+#[derive(PartialEq, Debug)]
 pub struct Price {
     mantissa: Value,
     exp: i8,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct TickerData {
-    price: Price,
-    pe: f32,
-    ps: f32,
+    price: Option<Price>,
+    pe: Option<f32>,
+    ps: Option<f32>,
     ticker: String,
 }
 
@@ -23,7 +26,7 @@ impl Price {
 }
 
 impl TickerData {
-    pub fn new(price: Price, pe: f32, ps: f32, ticker: String) -> Self {
+    pub fn new(price: Option<Price>, pe: Option<f32>, ps: Option<f32>, ticker: String) -> Self {
         Self {
             price,
             pe,
@@ -35,7 +38,9 @@ impl TickerData {
     pub fn print(&self) {
         println!(
             "Ticker: {}, P/E: {}, P/S: {}",
-            self.ticker, self.pe, self.ps
+            self.ticker,
+            self.pe.unwrap(),
+            self.ps.unwrap()
         );
     }
 }

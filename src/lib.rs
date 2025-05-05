@@ -6,6 +6,10 @@ pub mod ticker_scraper {
     pub mod ticker_parser_if;
 }
 
+pub mod string_manipulation {
+    pub mod string_manipulation;
+}
+
 pub mod ticker_data_scraper {
     pub mod data_scrape;
     pub mod next_page_getter;
@@ -26,5 +30,6 @@ pub mod ticker_data {
 pub mod tests {
     pub mod next_page_getter_test;
     pub mod scrape_test;
+    pub mod ticker_data_parser_test;
     pub mod ticker_parser_test;
 }
