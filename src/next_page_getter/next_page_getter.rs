@@ -1,4 +1,4 @@
-use crate::ticker_scraper::next_page_getter_if;
+use crate::next_page_getter::next_page_getter_if;
 
 pub struct NextPageGetter;
 

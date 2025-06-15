@@ -1,4 +1,4 @@
-use crate::ticker_scraper::{next_page_getter, next_page_getter_if::NextPageGetterIf};
+use crate::next_page_getter::{next_page_getter, next_page_getter_if::NextPageGetterIf};
 
 const BASE_PAGE: &str = "www.vshn.com/";
 

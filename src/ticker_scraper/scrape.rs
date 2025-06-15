@@ -1,11 +1,15 @@
 use std::collections::HashSet;
 
 use crate::fetcher::fetcher_if;
-use crate::ticker_scraper::next_page_getter_if;
+use crate::next_page_getter::next_page_getter_if;
 use crate::ticker_scraper::ticker_parser_if;
 
 use log::{debug, error, info};
 
+/**
+ * Scrapes finviz.com/screener for tickers
+ * IMPORTANT: dumps all the tickers at once
+ */
 pub async fn scrape<NPG, T, Fet>(
     npg: NPG,
     parser: T,

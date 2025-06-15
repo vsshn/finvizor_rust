@@ -2,8 +2,8 @@
 
 use env_logger;
 use finvizor_rust::fetcher::fetcher;
+use finvizor_rust::next_page_getter::next_page_getter;
 use finvizor_rust::ticker_scraper;
-use finvizor_rust::ticker_scraper::next_page_getter;
 use finvizor_rust::ticker_scraper::ticker_parser;
 
 #[tokio::main]
