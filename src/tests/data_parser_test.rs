@@ -21,7 +21,7 @@ fn test_parse_data_normal() {
                 finviz_ticker: "META".to_string()
             },
             Some(floating_point::FloatingPoint::new(1127, -2)),
-            Some(FloatingPoint::new(133, -1)),
+            Some(FloatingPoint::new(133, -2)),
         )
     )
 }
