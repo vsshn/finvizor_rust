@@ -33,10 +33,43 @@ fn get_all_tds_from_page(document: &Html) -> Option<Vec<scraper::ElementRef>> {
     return None;
 }
 
+fn get_string_from_element_ref(element_ref: &scraper::ElementRef) -> String {
+    element_ref
+        .text()
+        .collect::<Vec<_>>()
+        .join("")
+        .trim()
+        .to_string()
+}
+
+fn set_value_for_element(ticker_data: &mut TickerData, element: &str, value: &String) {
+    match element {
+        "P/B" => ticker_data.pb = FloatingPoint::construct_from_string(&value),
+        "Price" => ticker_data.price = FloatingPoint::construct_from_string(&value),
+        _ => println!("smth else: {} : {}", element, value),
+    }
+}
+
+fn process_tds(tds: Vec<scraper::ElementRef>) -> TickerData {
+    let mut left_to_find = FUNDAMENTAL_PARAMETERS.clone();
+    let mut ticker_data = TickerData::default();
+    for chunk in tds.chunks(2) {
+        if chunk.len() != 2 {
+            error!("Uneven number of elements in a table. Exiting");
+            break;
+        }
+
+        let element = get_string_from_element_ref(&chunk[0]);
+        if left_to_find.remove(&element) {
+            let value = get_string_from_element_ref(&chunk[1]);
+            set_value_for_element(&mut ticker_data, &element, &value);
+        }
+    }
+    ticker_data
+}
+
 impl data_parser_if::DataParserIf for DataParser {
     fn parse_data(&self, html: &str, ticker: &str) -> TickerData {
-        let mut ticker_data = TickerData::default();
-        let mut left_to_find = FUNDAMENTAL_PARAMETERS.clone();
         let document = Html::parse_document(&html);
 
         let tds: Vec<_> = get_all_tds_from_page(&document).unwrap_or_else(|| {
@@ -44,32 +77,7 @@ impl data_parser_if::DataParserIf for DataParser {
             vec![]
         });
 
-        for chunk in tds.chunks(2) {
-            if chunk.len() != 2 {
-                error!("Uneven number of elements in a table. Exiting");
-                break;
-            }
-            let element = chunk[0]
-                .text()
-                .collect::<Vec<_>>()
-                .join("")
-                .trim()
-                .to_string();
-            if left_to_find.contains(&element) {
-                left_to_find.remove(&element);
-                let value = chunk[1]
-                    .text()
-                    .collect::<Vec<_>>()
-                    .join("")
-                    .trim()
-                    .to_string();
-                match element.as_str() {
-                    "P/B" => ticker_data.pb = FloatingPoint::construct_from_string(&value),
-                    "Price" => ticker_data.price = FloatingPoint::construct_from_string(&value),
-                    _ => println!("smth else: {} : {}", element, value),
-                }
-            }
-        }
+        let mut ticker_data = process_tds(tds);
         ticker_data.security = Security {
             finviz_ticker: ticker.to_string(),
         };
