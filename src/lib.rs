@@ -24,7 +24,7 @@ pub mod stock_data_scraper {
     pub mod data_parser_if;
 
     pub mod page_getter;
-    pub mod page_getter_if;
+    pub mod scrape_ticker_data;
 }
 
 pub mod fetcher {
@@ -37,7 +37,6 @@ pub mod tests {
     pub mod data_parser_test;
     pub mod floating_point_test;
     pub mod next_page_getter_test;
-    pub mod page_getter_test;
     pub mod scrape_test;
     pub mod ticker_parser_test;
 }

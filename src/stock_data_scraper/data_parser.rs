@@ -69,18 +69,17 @@ fn process_tds(tds: Vec<scraper::ElementRef>) -> TickerData {
 }
 
 impl data_parser_if::DataParserIf for DataParser {
-    fn parse_data(&self, html: &str, ticker: &str) -> TickerData {
+    fn parse_data(&self, html: &str, ticker: &str) -> Option<TickerData> {
         let document = Html::parse_document(&html);
 
-        let tds: Vec<_> = get_all_tds_from_page(&document).unwrap_or_else(|| {
-            error!("Couldn't find the needed table elements");
-            vec![]
-        });
+        if let Some(tds) = get_all_tds_from_page(&document) {
+            let mut ticker_data = process_tds(tds);
+            ticker_data.security = Security {
+                finviz_ticker: ticker.to_string(),
+            };
+            return Some(ticker_data);
+        }
 
-        let mut ticker_data = process_tds(tds);
-        ticker_data.security = Security {
-            finviz_ticker: ticker.to_string(),
-        };
-        ticker_data
+        None
     }
 }

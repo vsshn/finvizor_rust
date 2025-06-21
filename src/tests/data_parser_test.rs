@@ -16,12 +16,18 @@ fn test_parse_data_normal() {
     let html = fs::read_to_string(HTML_PATH).unwrap();
     assert_eq!(
         DataParser.parse_data(&html, "META"),
-        TickerData::new(
+        Some(TickerData::new(
             Security {
                 finviz_ticker: "META".to_string()
             },
             Some(floating_point::FloatingPoint::new(1127, -2)),
             Some(FloatingPoint::new(133, -2)),
-        )
+        ))
     )
+}
+
+#[test]
+fn test_parse_data_empty() {
+    let html = "".to_string();
+    assert_eq!(DataParser.parse_data(&html, "META"), None);
 }
