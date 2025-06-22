@@ -38,5 +38,6 @@ pub mod tests {
     pub mod floating_point_test;
     pub mod next_page_getter_test;
     pub mod scrape_test;
+    pub mod scrape_ticker_data_test;
     pub mod ticker_parser_test;
 }
