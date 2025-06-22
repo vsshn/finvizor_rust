@@ -17,3 +17,7 @@ mockall = "0.12"
 [[bin]]
 name = "ticker_getter"
 path = "src/bin/ticker_getter.rs"
+
+[[bin]]
+name = "ticker_data_getter"
+path = "src/bin/ticker_data_getter.rs"

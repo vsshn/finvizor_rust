@@ -11,12 +11,16 @@ const BASE_PAGE: &str = "https://finviz.com/quote.ashx?t=";
 async fn main() {
     env_logger::init();
 
-    let tickers = vec![];
-    let ticker_data = scrape_ticker_data::data_scrape(
+    let tickers = vec!["AAPL".to_string(), "META".to_string()];
+    let tickers_data = scrape_ticker_data::data_scrape(
         data_parser::DataParser,
         fetcher::Fetcher,
         tickers,
         BASE_PAGE,
     )
     .await;
+
+    for ticker_data in tickers_data {
+        println!("TickerData: {:?}", ticker_data);
+    }
 }
