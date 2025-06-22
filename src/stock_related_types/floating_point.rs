@@ -16,7 +16,7 @@ const PANIC_MESSAGE: &str = "Expected valid input: (12.23, 100)";
 
 fn extract_float_from_valid_string(value: &str) -> FloatingPoint {
     if !is_valid_numeric_with_optional_dot(value) {
-        panic!("{}", PANIC_MESSAGE)
+        panic!("{}, got: {}", PANIC_MESSAGE, value)
     }
     let value = value.trim();
 
@@ -40,15 +40,13 @@ fn extract_float_from_valid_string(value: &str) -> FloatingPoint {
 
 impl FloatingPoint {
     pub fn new(mantissa: i64, exponent: i8) -> Self {
-        FloatingPoint {
-            mantissa: mantissa,
-            exponent: exponent,
-        }
+        FloatingPoint { mantissa, exponent }
     }
 
     pub fn construct_from_string(value_in_string: &str) -> Option<Self> {
         match value_in_string {
             "_" => None,
+            "-" => None,
             value => Some(extract_float_from_valid_string(value)),
         }
     }

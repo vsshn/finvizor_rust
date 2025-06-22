@@ -32,6 +32,10 @@ pub mod fetcher {
     pub mod fetcher_if;
 }
 
+pub mod ticker_file_reader {
+    pub mod ticker_file_reader;
+}
+
 #[cfg(test)]
 pub mod tests {
     pub mod data_parser_test;

@@ -5,6 +5,7 @@ use crate::stock_related_types::{
     floating_point::FloatingPoint, security::Security, ticker_data::TickerData,
 };
 
+use futures::StreamExt;
 use mockall::predicate::*;
 
 const BASE_PAGE: &str = "https://finviz.com/quote.ashx?t=";
@@ -16,7 +17,7 @@ async fn test_scrape_ticker_data_empty() {
     let mut fetcher = MockFetcherIf::new();
     parser.expect_parse_data().never();
     fetcher.expect_fetch_html().never();
-    let _tickers_data = scrape_ticker_data::data_scrape(parser, fetcher, tickers, BASE_PAGE).await;
+    let _tickers_data = scrape_ticker_data::data_scrape(parser, fetcher, tickers, BASE_PAGE);
 }
 
 #[tokio::test]
@@ -86,8 +87,8 @@ async fn test_scrape_ticker_data_normal() {
                 ))
             }
         });
-    let tickers_data = scrape_ticker_data::data_scrape(parser, fetcher, tickers, BASE_PAGE).await;
-    let vec_tickers_data: Vec<TickerData> = tickers_data.collect();
+    let tickers_data = scrape_ticker_data::data_scrape(parser, fetcher, tickers, BASE_PAGE);
+    let vec_tickers_data: Vec<TickerData> = tickers_data.collect().await;
     assert_eq!(
         vec_tickers_data,
         vec![
