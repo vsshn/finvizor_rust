@@ -15,6 +15,7 @@ static FUNDAMENTAL_PARAMETERS: Lazy<HashSet<String>> = Lazy::new(|| {
         "Price".to_string(),
         "Dividend TTM".to_string(),
         "Dividend Est.".to_string(),
+        "P/E".to_string(),
     ]
     .iter()
     .cloned()
@@ -63,6 +64,7 @@ fn set_value_for_element(ticker_data: &mut TickerData, element: &str, value: &St
         "Price" => ticker_data.price = FloatingPoint::construct_from_string(&value),
         "Dividend TTM" => ticker_data.dividend_ttm = extract_percent(value),
         "Dividend Est." => ticker_data.dividend_est = extract_percent(value),
+        "P/E" => ticker_data.pe = FloatingPoint::construct_from_string(value),
         _ => println!("smth else: {} : {}", element, value),
     }
 }

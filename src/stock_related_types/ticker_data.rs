@@ -12,6 +12,8 @@ pub struct TickerData {
     pub dividend_ttm: Option<FloatingPoint>,
     // dividend estimate in percent
     pub dividend_est: Option<FloatingPoint>,
+    // Price to earnings ttm
+    pub pe: Option<FloatingPoint>,
 }
 
 impl TickerData {
@@ -26,6 +28,7 @@ impl TickerData {
             pb,
             dividend_ttm: None,
             dividend_est: None,
+            pe: None,
         }
     }
 
@@ -42,6 +45,7 @@ impl TickerData {
             pb,
             dividend_ttm,
             dividend_est,
+            pe: None,
         }
     }
 

@@ -16,15 +16,16 @@ fn test_parse_data_normal() {
     let html = fs::read_to_string(HTML_PATH).unwrap();
     assert_eq!(
         DataParser.parse_data(&html, "META"),
-        Some(TickerData::new_with_dividend(
-            Security {
+        Some(TickerData {
+            security: Security {
                 finviz_ticker: "META".to_string()
             },
-            Some(floating_point::FloatingPoint::new(1127, -2)),
-            Some(FloatingPoint::new(133, -2)),
-            Some(FloatingPoint::new(50, -2)),
-            Some(FloatingPoint::new(51, -2)),
-        ))
+            price: Some(floating_point::FloatingPoint::new(1127, -2)),
+            pb: Some(FloatingPoint::new(133, -2)),
+            dividend_ttm: Some(FloatingPoint::new(50, -2)),
+            dividend_est: Some(FloatingPoint::new(51, -2)),
+            pe: Some(FloatingPoint::new(2709, -2))
+        })
     )
 }
 
