@@ -11,7 +11,7 @@ async fn main() {
 
     let fetcher = fetcher::Fetcher {};
     match fetcher
-        .fetch_html("https://finviz.com/quote.ashx?t=AACT")
+        .fetch_html("https://finviz.com/quote.ashx?t=AAPL")
         .await
     {
         Ok(html) => {

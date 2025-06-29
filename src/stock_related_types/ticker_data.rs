@@ -8,6 +8,10 @@ pub struct TickerData {
     pub price: Option<FloatingPoint>,
     // price to book
     pub pb: Option<FloatingPoint>,
+    // trailing 12 months dividend in percent
+    pub dividend_ttm: Option<FloatingPoint>,
+    // dividend estimate in percent
+    pub dividend_est: Option<FloatingPoint>,
 }
 
 impl TickerData {
@@ -20,6 +24,24 @@ impl TickerData {
             security,
             price,
             pb,
+            dividend_ttm: None,
+            dividend_est: None,
+        }
+    }
+
+    pub fn new_with_dividend(
+        security: Security,
+        price: Option<FloatingPoint>,
+        pb: Option<FloatingPoint>,
+        dividend_ttm: Option<FloatingPoint>,
+        dividend_est: Option<FloatingPoint>,
+    ) -> Self {
+        Self {
+            security,
+            price,
+            pb,
+            dividend_ttm,
+            dividend_est,
         }
     }
 

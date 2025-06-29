@@ -2,6 +2,7 @@ use crate::stock_data_scraper::data_parser_if;
 use crate::stock_related_types::{
     floating_point::FloatingPoint, security::Security, ticker_data::TickerData,
 };
+use crate::string_manipulation::string_manipulation::find_between;
 
 use log::error;
 use once_cell::sync::Lazy;
@@ -9,10 +10,15 @@ use scraper::{Html, Selector};
 use std::collections::HashSet;
 
 static FUNDAMENTAL_PARAMETERS: Lazy<HashSet<String>> = Lazy::new(|| {
-    ["P/B".to_string(), "Price".to_string()]
-        .iter()
-        .cloned()
-        .collect()
+    [
+        "P/B".to_string(),
+        "Price".to_string(),
+        "Dividend TTM".to_string(),
+        "Dividend Est.".to_string(),
+    ]
+    .iter()
+    .cloned()
+    .collect()
 });
 
 pub struct DataParser;
@@ -42,10 +48,21 @@ fn get_string_from_element_ref(element_ref: &scraper::ElementRef) -> String {
         .to_string()
 }
 
+fn extract_percent(value: &str) -> Option<FloatingPoint> {
+    if let Some(percent) = find_between(value, "(", ")") {
+        let percent = &percent[..percent.len().saturating_sub(1)];
+        FloatingPoint::construct_from_string(percent)
+    } else {
+        None
+    }
+}
+
 fn set_value_for_element(ticker_data: &mut TickerData, element: &str, value: &String) {
     match element {
         "P/B" => ticker_data.pb = FloatingPoint::construct_from_string(&value),
         "Price" => ticker_data.price = FloatingPoint::construct_from_string(&value),
+        "Dividend TTM" => ticker_data.dividend_ttm = extract_percent(value),
+        "Dividend Est." => ticker_data.dividend_est = extract_percent(value),
         _ => println!("smth else: {} : {}", element, value),
     }
 }
