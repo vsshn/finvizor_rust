@@ -1,6 +1,7 @@
 use regex::Regex;
+use std::cmp::Ordering;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(Debug, Clone)]
 
 pub struct FloatingPoint {
     mantissa: i64,
@@ -49,5 +50,33 @@ impl FloatingPoint {
             "-" => None,
             value => Some(extract_float_from_valid_string(value)),
         }
+    }
+}
+
+const TEN: u64 = 10;
+
+fn are_equal_rhs_exponent_bigger(lhs: &FloatingPoint, rhs: &FloatingPoint) -> bool {
+    let exp_diff = rhs.exponent - lhs.exponent;
+    lhs.mantissa == rhs.mantissa * (TEN.pow(exp_diff as u32) as i64)
+}
+
+impl PartialEq for FloatingPoint {
+    fn eq(&self, other: &Self) -> bool {
+        if self.exponent == other.exponent {
+            return self.mantissa == other.mantissa;
+        }
+
+        if self.exponent < other.exponent {
+            return are_equal_rhs_exponent_bigger(&self, &other);
+        }
+
+        are_equal_rhs_exponent_bigger(&other, &self)
+    }
+}
+
+impl PartialOrd for FloatingPoint {
+    fn partial_cmp(&self, _other: &Self) -> Option<Ordering> {
+        // TODO: Implement partial comparison logic
+        unimplemented!()
     }
 }

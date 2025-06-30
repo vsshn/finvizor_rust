@@ -27,6 +27,11 @@ pub mod stock_data_scraper {
     pub mod scrape_ticker_data;
 }
 
+pub mod filtering {
+    pub mod dividend_filter;
+    pub mod filter_if;
+}
+
 pub mod fetcher {
     pub mod fetcher;
     pub mod fetcher_if;
