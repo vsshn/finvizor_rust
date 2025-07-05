@@ -50,3 +50,20 @@ fn test_equality_normal() {
     assert_ne!(FloatingPoint::new(10, 2), FloatingPoint::new(10, -2));
     assert_ne!(FloatingPoint::new(10, 0), FloatingPoint::new(10, 1));
 }
+
+#[test]
+fn test_partial_order_same_exp() {
+    assert!(FloatingPoint::new(2, 1) > FloatingPoint::new(1, 1));
+    assert!(FloatingPoint::new(2, 0) < FloatingPoint::new(1, 1));
+    assert!(FloatingPoint::new(13, 1) < FloatingPoint::new(14, 1));
+    assert!(FloatingPoint::new(13, 1) > FloatingPoint::new(-13, 1));
+    assert!(FloatingPoint::new(13, -1) > FloatingPoint::new(-13, -1));
+}
+
+#[test]
+fn test_partial_order_diff_exp() {
+    assert!(FloatingPoint::new(1, 2) > FloatingPoint::new(1, 1));
+    assert!(FloatingPoint::new(13, -1) > FloatingPoint::new(130, -3));
+    assert!(FloatingPoint::new(13, 2) > FloatingPoint::new(-13, 3));
+    assert!(FloatingPoint::new(13, -1) > FloatingPoint::new(-13, -2));
+}

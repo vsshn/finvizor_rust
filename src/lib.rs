@@ -44,6 +44,7 @@ pub mod ticker_file_reader {
 #[cfg(test)]
 pub mod tests {
     pub mod data_parser_test;
+    pub mod dividend_filter_test;
     pub mod floating_point_test;
     pub mod next_page_getter_test;
     pub mod scrape_test;

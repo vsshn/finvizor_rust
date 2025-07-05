@@ -55,9 +55,13 @@ impl FloatingPoint {
 
 const TEN: u64 = 10;
 
+fn ten_pow(num: i64, pow: i8) -> i64 {
+    num * TEN.pow(pow as u32) as i64
+}
+
 fn are_equal_rhs_exponent_bigger(lhs: &FloatingPoint, rhs: &FloatingPoint) -> bool {
     let exp_diff = rhs.exponent - lhs.exponent;
-    lhs.mantissa == rhs.mantissa * (TEN.pow(exp_diff as u32) as i64)
+    lhs.mantissa == ten_pow(rhs.mantissa, exp_diff)
 }
 
 impl PartialEq for FloatingPoint {
@@ -74,9 +78,30 @@ impl PartialEq for FloatingPoint {
     }
 }
 
+fn compare_exponents_equal(lhs: i64, rhs: i64) -> Option<Ordering> {
+    if lhs < rhs {
+        return Some(Ordering::Less);
+    } else if lhs == rhs {
+        return Some(Ordering::Equal);
+    } else {
+        return Some(Ordering::Greater);
+    }
+}
+
 impl PartialOrd for FloatingPoint {
-    fn partial_cmp(&self, _other: &Self) -> Option<Ordering> {
-        // TODO: Implement partial comparison logic
-        unimplemented!()
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        if self.exponent == other.exponent {
+            return compare_exponents_equal(self.mantissa, other.mantissa);
+        } else if self.exponent < other.exponent {
+            return compare_exponents_equal(
+                self.mantissa,
+                ten_pow(other.mantissa, other.exponent - self.exponent),
+            );
+        } else {
+            return compare_exponents_equal(
+                ten_pow(self.mantissa, self.exponent - other.exponent),
+                other.mantissa,
+            );
+        }
     }
 }
