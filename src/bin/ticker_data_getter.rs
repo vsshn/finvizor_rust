@@ -28,8 +28,10 @@ struct TickerDataGetterOptions {
     tickers_path: String,
 }
 
-fn get_filter(settings: &TickerDataGetterOptions) -> Box<dyn SecurityFilterIf> {
-    let filter = NoOpFilter;
+fn decorate_with_dividend_filter_or_return(
+    settings: &TickerDataGetterOptions,
+    filter: Box<dyn SecurityFilterIf>,
+) -> Box<dyn SecurityFilterIf> {
     if let Some(dividends) = &settings.dividends {
         return Box::new(DividendFilter::new(
             Some(filter),
@@ -37,7 +39,7 @@ fn get_filter(settings: &TickerDataGetterOptions) -> Box<dyn SecurityFilterIf> {
             dividends.dividend_ttm.clone(),
         ));
     }
-    Box::new(NoOpFilter)
+    filter
 }
 
 #[tokio::main]
@@ -48,7 +50,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build()?
         .try_deserialize()?;
 
-    let filter = get_filter(&settings);
+    let filter = Box::new(NoOpFilter);
+    let filter = decorate_with_dividend_filter_or_return(&settings, filter);
 
     if let Ok(tickers) = ticker_file_reader::read_lines(&settings.tickers_path) {
         let tickers_data = scrape_ticker_data::data_scrape(

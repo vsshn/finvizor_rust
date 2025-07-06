@@ -2,15 +2,15 @@ use crate::filtering::filter_if::SecurityFilterIf;
 use crate::stock_related_types::floating_point::FloatingPoint;
 use crate::stock_related_types::ticker_data::TickerData;
 
-pub struct DividendFilter<T: SecurityFilterIf> {
-    wrappee: Option<T>,
+pub struct DividendFilter {
+    wrappee: Option<Box<dyn SecurityFilterIf>>,
     dividend_est: FloatingPoint,
     divident_ttm: FloatingPoint,
 }
 
-impl<T: SecurityFilterIf> DividendFilter<T> {
+impl DividendFilter {
     pub fn new(
-        wrappee: Option<T>,
+        wrappee: Option<Box<dyn SecurityFilterIf>>,
         dividend_est: FloatingPoint,
         divident_ttm: FloatingPoint,
     ) -> Self {
@@ -22,7 +22,7 @@ impl<T: SecurityFilterIf> DividendFilter<T> {
     }
 }
 
-impl<T: SecurityFilterIf> SecurityFilterIf for DividendFilter<T> {
+impl SecurityFilterIf for DividendFilter {
     fn filter(&self, ticker_data: &TickerData) -> bool {
         if let Some(wrappee) = &self.wrappee {
             if !wrappee.filter(&ticker_data) {
