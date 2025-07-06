@@ -1,0 +1,10 @@
+
+tickers_path = "/Users/vowchicke/finvizor_rust/tickers.txt"
+
+[dividends.dividend_ttm]
+mantissa = 5
+exponent = 0
+
+[dividends.dividend_est]
+mantissa = 5
+exponent = 0

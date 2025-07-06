@@ -1,21 +1,56 @@
 // src/main.rs
 
 use env_logger;
+use finvizor_rust::stock_related_types::floating_point::FloatingPoint;
 use futures::StreamExt;
 use log::error;
+use serde::Deserialize;
 
 use finvizor_rust::fetcher::fetcher;
+use finvizor_rust::filtering::dividend_filter::DividendFilter;
+use finvizor_rust::filtering::filter_if::{NoOpFilter, SecurityFilterIf};
 use finvizor_rust::stock_data_scraper::{data_parser, scrape_ticker_data};
 use finvizor_rust::ticker_file_reader::ticker_file_reader;
 
 const BASE_PAGE: &str = "https://finviz.com/quote.ashx?t=";
-const TICKERS_FILE_PATH: &str = "/Users/vowchicke/finvizor_rust/tickers.txt";
+const CONFIG_PATH: &str = "/Users/vowchicke/finvizor_rust/src/configs/ticker_data_getter.toml";
+
+#[derive(Deserialize)]
+struct Dividends {
+    dividend_ttm: FloatingPoint,
+    dividend_est: FloatingPoint,
+}
+
+#[derive(Deserialize)]
+
+struct TickerDataGetterOptions {
+    dividends: Option<Dividends>,
+    tickers_path: String,
+}
+
+fn get_filter(settings: &TickerDataGetterOptions) -> Box<dyn SecurityFilterIf> {
+    let filter = NoOpFilter;
+    if let Some(dividends) = &settings.dividends {
+        return Box::new(DividendFilter::new(
+            Some(filter),
+            dividends.dividend_est.clone(),
+            dividends.dividend_ttm.clone(),
+        ));
+    }
+    Box::new(NoOpFilter)
+}
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
+    let settings: TickerDataGetterOptions = config::Config::builder()
+        .add_source(config::File::with_name(CONFIG_PATH))
+        .build()?
+        .try_deserialize()?;
 
-    if let Ok(tickers) = ticker_file_reader::read_lines(TICKERS_FILE_PATH) {
+    let filter = get_filter(&settings);
+
+    if let Ok(tickers) = ticker_file_reader::read_lines(&settings.tickers_path) {
         let tickers_data = scrape_ticker_data::data_scrape(
             data_parser::DataParser,
             fetcher::Fetcher,
@@ -25,9 +60,22 @@ async fn main() {
         tokio::pin!(tickers_data);
 
         while let Some(ticker_data) = tickers_data.next().await {
-            println!("TickerData: {:?}", ticker_data);
+            if filter.filter(&ticker_data) {
+                println!(
+                    "ticker: {}\ndividend_ttm: {:?}\ndividend_est: {:?}\nprice: {:?}",
+                    ticker_data.security.finviz_ticker,
+                    ticker_data.dividend_ttm,
+                    ticker_data.dividend_est,
+                    ticker_data.price
+                );
+                println!();
+            }
         }
     } else {
-        error!("Error reading tickers fromn file: {}", TICKERS_FILE_PATH);
+        error!(
+            "Error reading tickers fromn file: {}",
+            &settings.tickers_path
+        );
     }
+    Ok(())
 }

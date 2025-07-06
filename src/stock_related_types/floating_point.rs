@@ -1,7 +1,8 @@
 use regex::Regex;
+use serde::Deserialize;
 use std::cmp::Ordering;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize)]
 
 pub struct FloatingPoint {
     mantissa: i64,
