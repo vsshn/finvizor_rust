@@ -8,3 +8,7 @@ exponent = 0
 [dividends.dividend_est]
 mantissa = 5
 exponent = 0
+
+[pb]
+mantissa = 5
+exponent = 0

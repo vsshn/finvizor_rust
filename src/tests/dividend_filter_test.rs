@@ -1,5 +1,5 @@
 use crate::filtering::dividend_filter::DividendFilter;
-use crate::filtering::filter_if::{NoOpFilter, SecurityFilterIf};
+use crate::filtering::filter_if::SecurityFilterIf;
 use crate::stock_related_types::floating_point::FloatingPoint;
 use crate::stock_related_types::security::Security;
 use crate::stock_related_types::ticker_data::TickerData;
@@ -17,6 +17,8 @@ fn create_ticker_data(
         price: None,
         pb: None,
         pe: None,
+        ps: None,
+        pc: None,
     }
 }
 

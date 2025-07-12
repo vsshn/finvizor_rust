@@ -6,7 +6,7 @@ pub struct TickerData {
     // identifier
     pub security: Security,
     pub price: Option<FloatingPoint>,
-    // price to book
+    // price to book mrq
     pub pb: Option<FloatingPoint>,
     // trailing 12 months dividend in percent
     pub dividend_ttm: Option<FloatingPoint>,
@@ -14,6 +14,10 @@ pub struct TickerData {
     pub dividend_est: Option<FloatingPoint>,
     // Price to earnings ttm
     pub pe: Option<FloatingPoint>,
+    // Price to sales ttm
+    pub ps: Option<FloatingPoint>,
+    // Price to cash per share mrq
+    pub pc: Option<FloatingPoint>,
 }
 
 impl TickerData {
@@ -29,6 +33,8 @@ impl TickerData {
             dividend_ttm: None,
             dividend_est: None,
             pe: None,
+            ps: None,
+            pc: None,
         }
     }
 
@@ -46,6 +52,8 @@ impl TickerData {
             dividend_ttm,
             dividend_est,
             pe: None,
+            ps: None,
+            pc: None,
         }
     }
 

@@ -1,6 +1,7 @@
 // src/main.rs
 
 use env_logger;
+use finvizor_rust::filtering::pb_filter::PBFilter;
 use finvizor_rust::stock_related_types::floating_point::FloatingPoint;
 use futures::StreamExt;
 use log::error;
@@ -25,6 +26,7 @@ struct Dividends {
 
 struct TickerDataGetterOptions {
     dividends: Option<Dividends>,
+    pb: Option<FloatingPoint>,
     tickers_path: String,
 }
 
@@ -42,6 +44,25 @@ fn decorate_with_dividend_filter_or_return(
     filter
 }
 
+fn decorate_with_pb_filter_or_return(
+    settings: &TickerDataGetterOptions,
+    filter: Box<dyn SecurityFilterIf>,
+) -> Box<dyn SecurityFilterIf> {
+    if let Some(pb) = &settings.pb {
+        return Box::new(PBFilter::new(Some(filter), pb.clone()));
+    }
+    filter
+}
+
+fn decorate_or_return(
+    settings: &TickerDataGetterOptions,
+    filter: Box<dyn SecurityFilterIf>,
+) -> Box<dyn SecurityFilterIf> {
+    let filter = decorate_with_dividend_filter_or_return(settings, filter);
+    let filter = decorate_with_pb_filter_or_return(settings, filter);
+    filter
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
@@ -51,7 +72,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .try_deserialize()?;
 
     let filter = Box::new(NoOpFilter);
-    let filter = decorate_with_dividend_filter_or_return(&settings, filter);
+    let filter = decorate_or_return(&settings, filter);
 
     if let Ok(tickers) = ticker_file_reader::read_lines(&settings.tickers_path) {
         let tickers_data = scrape_ticker_data::data_scrape(
@@ -65,11 +86,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         while let Some(ticker_data) = tickers_data.next().await {
             if filter.filter(&ticker_data) {
                 println!(
-                    "ticker: {}\ndividend_ttm: {:?}\ndividend_est: {:?}\nprice: {:?}",
+                    "ticker: {}\ndividend_ttm: {:?}\ndividend_est: {:?}\nprice: {:?}\npb: {:?}",
                     ticker_data.security.finviz_ticker,
                     ticker_data.dividend_ttm,
                     ticker_data.dividend_est,
-                    ticker_data.price
+                    ticker_data.price,
+                    ticker_data.pb
                 );
                 println!();
             }

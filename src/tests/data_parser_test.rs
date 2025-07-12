@@ -24,7 +24,9 @@ fn test_parse_data_normal() {
             pb: Some(FloatingPoint::new(133, -2)),
             dividend_ttm: Some(FloatingPoint::new(50, -2)),
             dividend_est: Some(FloatingPoint::new(51, -2)),
-            pe: Some(FloatingPoint::new(2709, -2))
+            pe: Some(FloatingPoint::new(2709, -2)),
+            ps: None,
+            pc: Some(FloatingPoint::new(71107, -2))
         })
     )
 }
